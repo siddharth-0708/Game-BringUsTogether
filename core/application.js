@@ -14,7 +14,7 @@ bunny.y = app.renderer.height / 2;
 
 // Rotate around the center
 bunny.anchor.x = 0.5;
-bunny.anchor.y = 0.5;
+bunny.anchor.y = 0.5;//
 
 // Add the bunny to the scene we are building
 app.stage.addChild(bunny);
