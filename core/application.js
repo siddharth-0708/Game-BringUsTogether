@@ -38,4 +38,6 @@ var resizeCanvasContainer = function () {
 resizeCanvasContainer();
 window.onresize = function(){
     resizeCanvasContainer();
+    console.log("from master");
 }
+
