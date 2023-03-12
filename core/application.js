@@ -1,5 +1,5 @@
 import { Application, Assets, Sprite } from 'pixi.js';
-import {isMobile} from 'react-device-detect';
+import {isMobile, userAgent } from 'react-device-detect';
 import bunny1 from '../assets/bunny.png'
 
 let app;
@@ -46,12 +46,12 @@ var resizeCanvasContainer = function () {
     }
 };
 window.onresize = function(){
+
     if(isMobile){
         bunny.x = app.renderer.width / 2;
         bunny.y = app.renderer.height / 2;
         let scale  = window.innerWidth/375;
         bunny.scale.set(scale*0.5);
-        app.renderer.resize(window.innerWidth, window.innerHeight);
     }else{
         resizeCanvasContainer();
     }
