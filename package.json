@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot",
-     "build": "webpack --mode production"
+    "build": "webpack --mode production"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "html-webpack-plugin": "^5.5.0",
     "pixi": "^0.3.1",
     "pixi.js": "^7.1.4",
+    "react-device-detect": "^2.2.3",
     "webpack": "^5.76.1",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
