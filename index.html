@@ -1,8 +1,30 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <meta charset="utf-8">
+	<base id="myBase" href="" target="_blank">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, minimal-ui">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="format-detection" content="telephone=no">
+	<meta name="HandheldFriendly" content="true" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-transulent" />
+</head>    
 <style>
-    body, html{
+    html{
+        /*border: 10px solid red;*/
         height: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        margin: auto;
+    }
+    body{
+        /*border: 10px solid green;*/
+        box-sizing: border-box;
+        overflow: hidden;
+        height: 100%;
+        margin: auto;
     }
     #canvasContainer {
         width: 100%;
@@ -10,6 +32,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        box-sizing: border-box;
     }
 </style>    
 <body>
