@@ -1,7 +1,13 @@
 import { Application, Assets, Sprite, Container, Graphics } from 'pixi.js';
 import {isMobile, userAgent } from 'react-device-detect';
+import gsap from 'gsap';
 import tile1 from '../assets/tile1.png'
 import tile2 from '../assets/tile2.png'
+import apple from '../assets/apple.png'
+import kiwi from '../assets/kiwi.png'
+import mango from '../assets/mango.png'
+import orange from '../assets/orange.png'
+import dragonFruit from '../assets/dragonFruit.png'
 
 let app;
 let widthDesktop = 800;
@@ -19,6 +25,11 @@ document.getElementById('canvasContainer').appendChild(app.view);
 
 const textureTile1 = await Assets.load(tile1); //check this
 const textureTile2 = await Assets.load(tile2); //check this
+const textureApple = await Assets.load(apple); //check this
+const textureKiwi = await Assets.load(kiwi); //check this
+const textureMango = await Assets.load(mango); //check this
+const textureOrange = await Assets.load(orange); //check this
+const textureDragonFruit = await Assets.load(dragonFruit); //check this
 
 // // Setup the position of the bunny
 // bunny.x = app.renderer.width / 2;
@@ -58,18 +69,35 @@ var gameInit = function(){
 
             const tile1Image = new Sprite(textureTile1);
             tile1Image.anchor.set(0.5);
+            tile1Image.scale.set(800/(noOfSquareslevel1*200));
             tile1Image.x = tile1Image.width/2;
             tile1Image.y= tile1Image.height/2;
+
             const tile2Image = new Sprite(textureTile2);
             tile2Image.anchor.set(0.5);
+            tile2Image.scale.set(800/(noOfSquareslevel1*200));
             tile2Image.x = tile2Image.width/2;
             tile2Image.y= tile2Image.height/2;
+            tile2Image.visible = false;
 
             squareContainer.addChild(square);
             squareContainer.addChild(tile1Image);
             squareContainer.addChild(tile2Image);
 
             parentContainer.addChild(squareContainer);
+
+            //gsap.to(tile1Image, {scale: 1.5, duration: 5,
+                // onComplete:()=>{
+                //     tile1Image.visible = false;
+                //     tile2Image.visible = true;
+                //     tile2Image.scaleX = 0;
+                //     gsap.to(tile2Image, {scaleX: 1, duration: 5,
+                //         onComplete:()=>{
+                            
+                //         }
+                //     });
+                // }
+            //});
         }
     }
 }
