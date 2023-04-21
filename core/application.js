@@ -15,9 +15,9 @@ let heightDesktop = 800;
 let noOfSquareslevel1 = 4;
 
 if(isMobile){
-    app = new Application( {width: 375, height: 667, backgroundColor: 0x000000, autoResize: true, resizeTo: window, resolution: window.devicePixelRatio > 1 ? 1:1 }); //check this
+    app = new Application( {width: 375, height: 667, backgroundAlpha: 1, backgroundColor: 0x000000, autoResize: true, resizeTo: window, resolution: window.devicePixelRatio > 1 ? 1:1 }); //check this
 }else{
-    app = new Application( {width: 800, height: 800, backgroundColor: 0x000000, autoResize: true, resolution: window.devicePixelRatio > 1 ? 2:1 });
+    app = new Application( {width: 800, height: 800, backgroundAlpha: 1,  backgroundColor: 0x000000, autoResize: true, resolution: window.devicePixelRatio > 1 ? 2:1 });
 }
 globalThis.__PIXI_APP__ = app;
 
@@ -30,6 +30,8 @@ const textureKiwi = await Assets.load(kiwi); //check this
 const textureMango = await Assets.load(mango); //check this
 const textureOrange = await Assets.load(orange); //check this
 const textureDragonFruit = await Assets.load(dragonFruit); //check this
+
+let assetsArray = [textureApple, textureKiwi, textureMango, textureOrange, textureDragonFruit];
 
 // // Setup the position of the bunny
 // bunny.x = app.renderer.width / 2;
@@ -67,41 +69,69 @@ var gameInit = function(){
             square.drawRect(0, 0, width, height);
             square.endFill();
 
-            const tile1Image = new Sprite(textureTile1);
+            const tile1Image = new Sprite(textureTile2);
             tile1Image.anchor.set(0.5);
             tile1Image.scale.set(800/(noOfSquareslevel1*200));
             tile1Image.x = tile1Image.width/2;
             tile1Image.y= tile1Image.height/2;
 
-            const tile2Image = new Sprite(textureTile2);
+            const tile2Image = new Sprite(textureTile1);
             tile2Image.anchor.set(0.5);
             tile2Image.scale.set(800/(noOfSquareslevel1*200));
             tile2Image.x = tile2Image.width/2;
             tile2Image.y= tile2Image.height/2;
-            tile2Image.visible = false;
+
+            const assetImage = new Sprite(assetsArray[randomInteger(0,4)]);
+            assetImage.anchor.set(0.5);
+            assetImage.scale.set(800/(noOfSquareslevel1*200));
+            assetImage.x = assetImage.width/2;
+            assetImage.y= assetImage.height/2;
+            assetImage.alpha = 0;
 
             squareContainer.addChild(square);
             squareContainer.addChild(tile1Image);
             squareContainer.addChild(tile2Image);
+            squareContainer.addChild(assetImage);
 
             parentContainer.addChild(squareContainer);
+            tile2Image.interactive = 'static';
+            tile2Image.cursor = 'pointer';
 
-            //gsap.to(tile1Image, {scale: 1.5, duration: 5,
-                // onComplete:()=>{
-                //     tile1Image.visible = false;
-                //     tile2Image.visible = true;
-                //     tile2Image.scaleX = 0;
-                //     gsap.to(tile2Image, {scaleX: 1, duration: 5,
-                //         onComplete:()=>{
-                            
-                //         }
-                //     });
-                // }
-            //});
+            tile2Image.on('pointerdown', (event) => { elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer)});
         }
     }
 }
+function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer){
+    let toScale = tile1Image.scale.x;
+    tile1Image.scale.x = 0;
+    tile1Image.scl = tile1Image.scale.x;
+    tile2Image.scl = tile2Image.scale.x;
 
+    assetImage.x = squareContainer.getBounds().width/2;
+    assetImage.y=  squareContainer.getBounds().height/2;
+
+    gsap.to(tile2Image, {scl: 0, duration: 0.3,
+        onUpdate:()=>{
+            tile2Image.scale.x = tile2Image.scl;
+        },
+        onComplete:()=>{
+            gsap.to(tile1Image, {scl: toScale, duration: 0.3,
+                onUpdate:()=>{
+                    tile1Image.scale.x = tile1Image.scl;
+                },
+                onComplete:()=>{
+                    gsap.to(assetImage, {alpha: 1, duration: 0.3,
+                        onComplete:()=>{
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+function randomInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 var resizeCanvasContainer = function () {
     if(isMobile){
         return
