@@ -8,11 +8,12 @@ import kiwi from '../assets/kiwi.png'
 import mango from '../assets/mango.png'
 import orange from '../assets/orange.png'
 import dragonFruit from '../assets/dragonFruit.png'
+import captainAmerica from '../assets/captainAmerica.png'
 
 let app;
 let widthDesktop = 800;
 let heightDesktop = 800;
-let noOfSquareslevel1 = 4;
+let noOfSquareslevel1 = 6;
 
 if(isMobile){
     app = new Application( {width: 375, height: 667, backgroundAlpha: 1, backgroundColor: 0x000000, autoResize: true, resizeTo: window, resolution: window.devicePixelRatio > 1 ? 1:1 }); //check this
@@ -26,12 +27,12 @@ document.getElementById('canvasContainer').appendChild(app.view);
 const textureTile1 = await Assets.load(tile1); //check this
 const textureTile2 = await Assets.load(tile2); //check this
 const textureApple = await Assets.load(apple); //check this
-const textureKiwi = await Assets.load(kiwi); //check this
 const textureMango = await Assets.load(mango); //check this
 const textureOrange = await Assets.load(orange); //check this
 const textureDragonFruit = await Assets.load(dragonFruit); //check this
+const textureCaptainAmerica = await Assets.load(captainAmerica); //check this
 
-let assetsArray = [textureApple, textureKiwi, textureMango, textureOrange, textureDragonFruit];
+let assetsArray = [textureApple, textureMango, textureOrange, textureDragonFruit, textureCaptainAmerica];
 
 // // Setup the position of the bunny
 // bunny.x = app.renderer.width / 2;
@@ -63,25 +64,37 @@ var gameInit = function(){
             squareContainer.y = j*height;
 
             squareContainer.name = "row_" + i + "_col_" + j;
-            let square = new Graphics();
+            let square = new Graphics(); 
             square.beginFill(0x000000, 0.5);
+            /*
+            Question: what is beginFill and endFill?
+            Specifies a simple one-color fill that subsequent calls to other Graphics methods (such as lineTo() or drawCircle()) use when drawing.
+            */
             square.lineStyle(2, 0xFF0000);
             square.drawRect(0, 0, width, height);
             square.endFill();
 
-            const tile1Image = new Sprite(textureTile2);
-            tile1Image.anchor.set(0.5);
+            let tile1Image = new Graphics();
+            tile1Image.beginFill(0xFFFDD0, 1);
+            //tile1Image.lineStyle(2, 0xFF0000);
+            tile1Image.drawRect(0, 0, 200, 200);
+            tile1Image.endFill();
+            tile1Image.pivot.set(tile1Image.width/2, tile1Image.height/2);
             tile1Image.scale.set(800/(noOfSquareslevel1*200));
             tile1Image.x = tile1Image.width/2;
             tile1Image.y= tile1Image.height/2;
 
-            const tile2Image = new Sprite(textureTile1);
-            tile2Image.anchor.set(0.5);
+            let tile2Image = new Graphics();
+            tile2Image.beginFill(0xFFA500, 1);
+            //tile2Image.lineStyle(2, 0xFF0000);
+            tile2Image.drawRect(0, 0, 200, 200);
+            tile2Image.endFill();
+            tile2Image.pivot.set(tile2Image.width/2, tile2Image.height/2);
             tile2Image.scale.set(800/(noOfSquareslevel1*200));
             tile2Image.x = tile2Image.width/2;
             tile2Image.y= tile2Image.height/2;
 
-            const assetImage = new Sprite(assetsArray[randomInteger(0,4)]);
+            const assetImage = new Sprite(assetsArray[randomInteger(0,assetsArray.length - 1)]);
             assetImage.anchor.set(0.5);
             assetImage.scale.set(800/(noOfSquareslevel1*200));
             assetImage.x = assetImage.width/2;
@@ -110,12 +123,12 @@ function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer){
     assetImage.x = squareContainer.getBounds().width/2;
     assetImage.y=  squareContainer.getBounds().height/2;
 
-    gsap.to(tile2Image, {scl: 0, duration: 0.3,
+    gsap.to(tile2Image, {scl: 0, duration: 0.1,
         onUpdate:()=>{
             tile2Image.scale.x = tile2Image.scl;
         },
         onComplete:()=>{
-            gsap.to(tile1Image, {scl: toScale, duration: 0.3,
+            gsap.to(tile1Image, {scl: toScale, duration: 0.1,
                 onUpdate:()=>{
                     tile1Image.scale.x = tile1Image.scl;
                 },
