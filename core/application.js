@@ -13,7 +13,7 @@ import captainAmerica from '../assets/captainAmerica.png'
 let app;
 let widthDesktop = 800;
 let heightDesktop = 800;
-let noOfSquareslevel1 = 6;
+let noOfSquareslevel1 = 4;
 
 if(isMobile){
     app = new Application( {width: 375, height: 667, backgroundAlpha: 1, backgroundColor: 0x000000, autoResize: true, resizeTo: window, resolution: window.devicePixelRatio > 1 ? 1:1 }); //check this
@@ -60,23 +60,23 @@ var gameInit = function(){
     for(let i = 0; i < noOfSquareslevel1; i++){
         for(let j = 0; j < noOfSquareslevel1; j++){
             const squareContainer = new Container();
-            squareContainer.x = i*width;
-            squareContainer.y = j*height;
+            squareContainer.x = j*width;
+            squareContainer.y = i*height;
 
             squareContainer.name = "row_" + i + "_col_" + j;
-            let square = new Graphics(); 
-            square.beginFill(0x000000, 0.5);
+            // let square = new Graphics(); 
+            // square.beginFill(0x000000, 0.5);
             /*
             Question: what is beginFill and endFill?
             Specifies a simple one-color fill that subsequent calls to other Graphics methods (such as lineTo() or drawCircle()) use when drawing.
             */
-            square.lineStyle(2, 0xFF0000);
-            square.drawRect(0, 0, width, height);
-            square.endFill();
+            // square.lineStyle(2, 0xFF0000);
+            // square.drawRect(0, 0, width, height);
+            // square.endFill();
 
             let tile1Image = new Graphics();
             tile1Image.beginFill(0xFFFDD0, 1);
-            //tile1Image.lineStyle(2, 0xFF0000);
+            tile1Image.lineStyle(3, 0x000000);
             tile1Image.drawRect(0, 0, 200, 200);
             tile1Image.endFill();
             tile1Image.pivot.set(tile1Image.width/2, tile1Image.height/2);
@@ -86,7 +86,7 @@ var gameInit = function(){
 
             let tile2Image = new Graphics();
             tile2Image.beginFill(0xFFA500, 1);
-            //tile2Image.lineStyle(2, 0xFF0000);
+            tile2Image.lineStyle(3, 0x000000);
             tile2Image.drawRect(0, 0, 200, 200);
             tile2Image.endFill();
             tile2Image.pivot.set(tile2Image.width/2, tile2Image.height/2);
@@ -101,7 +101,7 @@ var gameInit = function(){
             assetImage.y= assetImage.height/2;
             assetImage.alpha = 0;
 
-            squareContainer.addChild(square);
+            //squareContainer.addChild(square);
             squareContainer.addChild(tile1Image);
             squareContainer.addChild(tile2Image);
             squareContainer.addChild(assetImage);
