@@ -107,21 +107,36 @@ var gameInit = function(){
             squareContainer.addChild(assetImage);
 
             parentContainer.addChild(squareContainer);
-            tile2Image.interactive = 'static';
+            tile2Image.interactive = true;
             tile2Image.cursor = 'pointer';
 
-            tile2Image.on('pointerdown', (event) => { elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer)});
+            tile1Image.interactive = true;
+            tile1Image.cursor = 'pointer';
+
+            tile1Image.on('pointerdown', (event) => { elemetCLicked(tile1Image, tile2Image, assetImage, squareContainer, "close")});
+            tile2Image.on('pointerdown', (event) => { elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer, "open")});
         }
     }
 }
-function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer){
-    let toScale = tile1Image.scale.x;
-    tile1Image.scale.x = 0;
-    tile1Image.scl = tile1Image.scale.x;
-    tile2Image.scl = tile2Image.scale.x;
+function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer, operation){
+    let toScale = 1;
+    tile2Image.interactive = false;
+    tile1Image.interactive = false;
 
-    assetImage.x = squareContainer.getBounds().width/2;
-    assetImage.y=  squareContainer.getBounds().height/2;
+    if(operation == "open"){
+        tile1Image.scale.x = 0;
+        tile1Image.scl = tile1Image.scale.x;
+        tile2Image.scl = tile2Image.scale.x;
+    
+        assetImage.x = squareContainer.getBounds().width/2;
+        assetImage.y=  squareContainer.getBounds().height/2;
+    }else{
+        assetImage.alpha = 0;
+
+        tile2Image.scale.x = 0;
+        tile2Image.scl = tile2Image.scale.x;
+        tile1Image.scl = tile1Image.scale.x;
+    }
 
     gsap.to(tile2Image, {scl: 0, duration: 0.1,
         onUpdate:()=>{
@@ -133,10 +148,16 @@ function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer){
                     tile1Image.scale.x = tile1Image.scl;
                 },
                 onComplete:()=>{
-                    gsap.to(assetImage, {alpha: 1, duration: 0.3,
-                        onComplete:()=>{
-                        }
-                    });
+                    if(operation == "open"){
+                        gsap.to(assetImage, {alpha: 1, duration: 0.2,
+                            onComplete:()=>{
+                                tile1Image.interactive = true;
+                            }
+                        });
+                    }else{
+                        assetImage.alpha = 0; 
+                        tile1Image.interactive = true;
+                    }
                 }
             });
         }
