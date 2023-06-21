@@ -14,6 +14,8 @@ let app;
 let widthDesktop = 800;
 let heightDesktop = 800;
 let noOfSquareslevel1 = 4;
+let firstElement = null;
+let secondElement = null;
 
 if(isMobile){
     app = new Application( {width: 375, height: 667, backgroundAlpha: 1, backgroundColor: 0x000000, autoResize: true, resizeTo: window, resolution: window.devicePixelRatio > 1 ? 1:1 }); //check this
@@ -24,15 +26,13 @@ globalThis.__PIXI_APP__ = app;
 
 document.getElementById('canvasContainer').appendChild(app.view);
 
-const textureTile1 = await Assets.load(tile1); //check this
-const textureTile2 = await Assets.load(tile2); //check this
 const textureApple = await Assets.load(apple); //check this
 const textureMango = await Assets.load(mango); //check this
 const textureOrange = await Assets.load(orange); //check this
 const textureDragonFruit = await Assets.load(dragonFruit); //check this
 const textureCaptainAmerica = await Assets.load(captainAmerica); //check this
 
-let assetsArray = [textureApple, textureMango, textureOrange, textureDragonFruit, textureCaptainAmerica];
+let assetsArray = [{id: 1, image:textureApple}, {id: 2, image:textureMango}, {id: 3, image:textureOrange}, {id: 4, image: textureDragonFruit}, {id: 5, image: textureCaptainAmerica}];
 
 // // Setup the position of the bunny
 // bunny.x = app.renderer.width / 2;
@@ -75,6 +75,7 @@ var gameInit = function(){
             // square.endFill();
 
             let tile1Image = new Graphics();
+            tile1Image.name = "tile1Image";
             tile1Image.beginFill(0xFFFDD0, 1);
             tile1Image.lineStyle(3, 0x000000);
             tile1Image.drawRect(0, 0, 200, 200);
@@ -85,6 +86,7 @@ var gameInit = function(){
             tile1Image.y= tile1Image.height/2;
 
             let tile2Image = new Graphics();
+            tile2Image.name = "tile2Image";
             tile2Image.beginFill(0xFFA500, 1);
             tile2Image.lineStyle(3, 0x000000);
             tile2Image.drawRect(0, 0, 200, 200);
@@ -94,7 +96,9 @@ var gameInit = function(){
             tile2Image.x = tile2Image.width/2;
             tile2Image.y= tile2Image.height/2;
 
-            const assetImage = new Sprite(assetsArray[randomInteger(0,assetsArray.length - 1)]);
+            let rnd = randomInteger(0,assetsArray.length - 1);
+            const assetImage = new Sprite(assetsArray[rnd].image);
+            assetImage.name = "asset";
             assetImage.anchor.set(0.5);
             assetImage.scale.set(800/(noOfSquareslevel1*200));
             assetImage.x = assetImage.width/2;
@@ -105,6 +109,7 @@ var gameInit = function(){
             squareContainer.addChild(tile1Image);
             squareContainer.addChild(tile2Image);
             squareContainer.addChild(assetImage);
+            squareContainer.id = assetsArray[rnd].id;
 
             parentContainer.addChild(squareContainer);
             tile2Image.interactive = true;
@@ -119,6 +124,13 @@ var gameInit = function(){
     }
 }
 function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer, operation){
+    if(operation == "open"){
+        if(firstElement == null){
+            firstElement = squareContainer;
+        }else{
+            secondElement = squareContainer;
+        }
+    }
     let toScale = 1;
     tile2Image.interactive = false;
     tile1Image.interactive = false;
@@ -151,7 +163,8 @@ function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer, oper
                     if(operation == "open"){
                         gsap.to(assetImage, {alpha: 1, duration: 0.2,
                             onComplete:()=>{
-                                tile1Image.interactive = true;
+                                //tile1Image.interactive = true;
+                                getResults();
                             }
                         });
                     }else{
@@ -162,6 +175,32 @@ function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer, oper
             });
         }
     });
+}
+function getResults(){
+    if(firstElement !== null && secondElement !== null){
+        if(firstElement.id == secondElement.id){
+            console.log("matchedddd");
+            firstElement.getChildByName('tile1Image').interactive = false;
+            firstElement.getChildByName('tile2Image').interactive = false;
+
+            secondElement.getChildByName('tile1Image').interactive = false;
+            secondElement.getChildByName('tile2Image').interactive = false;
+
+            firstElement = null;
+            secondElement = null;
+        }else{
+            console.log("not matchedddd");
+            firstElement.getChildByName('tile1Image').interactive = true;
+            secondElement.getChildByName('tile1Image').interactive = true;
+            setTimeout(() => {
+                elemetCLicked(firstElement.getChildByName('tile1Image'), firstElement.getChildByName('tile2Image'), firstElement.getChildByName('asset'),firstElement, "close");
+                elemetCLicked(secondElement.getChildByName('tile1Image'), secondElement.getChildByName('tile2Image'), secondElement.getChildByName('asset'),secondElement, "close");
+
+                firstElement = null;
+                secondElement = null;
+            }, 100);
+        }
+    }
 }
 function randomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
