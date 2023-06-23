@@ -11,11 +11,14 @@ import dragonFruit from '../assets/dragonFruit.png'
 import captainAmerica from '../assets/captainAmerica.png'
 
 let app;
+let elementsArray = [];
+let elementsSelectedId = new Map();
 let widthDesktop = 800;
 let heightDesktop = 800;
 let noOfSquareslevel1 = 4;
 let firstElement = null;
 let secondElement = null;
+let blackOverlayGraphics = null;
 
 if(isMobile){
     app = new Application( {width: 375, height: 667, backgroundAlpha: 1, backgroundColor: 0x000000, autoResize: true, resizeTo: window, resolution: window.devicePixelRatio > 1 ? 1:1 }); //check this
@@ -33,18 +36,6 @@ const textureDragonFruit = await Assets.load(dragonFruit); //check this
 const textureCaptainAmerica = await Assets.load(captainAmerica); //check this
 
 let assetsArray = [{id: 1, image:textureApple}, {id: 2, image:textureMango}, {id: 3, image:textureOrange}, {id: 4, image: textureDragonFruit}, {id: 5, image: textureCaptainAmerica}];
-
-// // Setup the position of the bunny
-// bunny.x = app.renderer.width / 2;
-// bunny.y = app.renderer.height / 2;
-
-// // Rotate around the center
-// bunny.anchor.x = 0.5;
-// bunny.anchor.y = 0.5;//
-
-// // Add the bunny to the scene we are building
-// app.stage.addChild(bunny);
-
 // Listen for frame updates
 app.ticker.add(() => {
     // each frame we spin the bunny around a bit
@@ -64,37 +55,29 @@ var gameInit = function(){
             squareContainer.y = i*height;
 
             squareContainer.name = "row_" + i + "_col_" + j;
-            // let square = new Graphics(); 
-            // square.beginFill(0x000000, 0.5);
-            /*
-            Question: what is beginFill and endFill?
-            Specifies a simple one-color fill that subsequent calls to other Graphics methods (such as lineTo() or drawCircle()) use when drawing.
-            */
-            // square.lineStyle(2, 0xFF0000);
-            // square.drawRect(0, 0, width, height);
-            // square.endFill();
 
-            let tile1Image = new Graphics();
-            tile1Image.name = "tile1Image";
-            tile1Image.beginFill(0xFFFDD0, 1);
-            tile1Image.lineStyle(3, 0x000000);
-            tile1Image.drawRect(0, 0, 200, 200);
-            tile1Image.endFill();
-            tile1Image.pivot.set(tile1Image.width/2, tile1Image.height/2);
-            tile1Image.scale.set(800/(noOfSquareslevel1*200));
-            tile1Image.x = tile1Image.width/2;
-            tile1Image.y= tile1Image.height/2;
+            let backImage = new Graphics();
+            backImage.name = "backImage";
+            backImage.beginFill(0xFFFDD0, 1);
+            backImage.lineStyle(3, 0x000000);
+            backImage.drawRect(0, 0, 200, 200);
+            backImage.endFill();
+            backImage.pivot.set(backImage.width/2, backImage.height/2);
+            backImage.scale.set(800/(noOfSquareslevel1*200));
+            backImage.x = backImage.width/2;
+            backImage.y= backImage.height/2;
+            backImage.interactive = false;
 
-            let tile2Image = new Graphics();
-            tile2Image.name = "tile2Image";
-            tile2Image.beginFill(0xFFA500, 1);
-            tile2Image.lineStyle(3, 0x000000);
-            tile2Image.drawRect(0, 0, 200, 200);
-            tile2Image.endFill();
-            tile2Image.pivot.set(tile2Image.width/2, tile2Image.height/2);
-            tile2Image.scale.set(800/(noOfSquareslevel1*200));
-            tile2Image.x = tile2Image.width/2;
-            tile2Image.y= tile2Image.height/2;
+            let frontImage = new Graphics();
+            frontImage.name = "frontImage";
+            frontImage.beginFill(0xFFA500, 1);
+            frontImage.lineStyle(3, 0x000000);
+            frontImage.drawRect(0, 0, 200, 200);
+            frontImage.endFill();
+            frontImage.pivot.set(frontImage.width/2, frontImage.height/2);
+            frontImage.scale.set(800/(noOfSquareslevel1*200));
+            frontImage.x = frontImage.width/2;
+            frontImage.y= frontImage.height/2;
 
             let rnd = randomInteger(0,assetsArray.length - 1);
             const assetImage = new Sprite(assetsArray[rnd].image);
@@ -106,24 +89,50 @@ var gameInit = function(){
             assetImage.alpha = 0;
 
             //squareContainer.addChild(square);
-            squareContainer.addChild(tile1Image);
-            squareContainer.addChild(tile2Image);
+            squareContainer.addChild(backImage);
+            squareContainer.addChild(frontImage);
             squareContainer.addChild(assetImage);
+            squareContainer.backImage = backImage;
+            squareContainer.frontImage = frontImage;
+            squareContainer.assetImage = assetImage;
             squareContainer.id = assetsArray[rnd].id;
 
             parentContainer.addChild(squareContainer);
-            tile2Image.interactive = true;
-            tile2Image.cursor = 'pointer';
+            elementsArray.push({frontImage: frontImage, id: squareContainer.id});
+            frontImage.interactive = true;
+            frontImage.cursor = 'pointer';
 
-            tile1Image.interactive = true;
-            tile1Image.cursor = 'pointer';
+            backImage.interactive = true;
+            backImage.cursor = 'pointer';
 
-            tile1Image.on('pointerdown', (event) => { elemetCLicked(tile1Image, tile2Image, assetImage, squareContainer, "close")});
-            tile2Image.on('pointerdown', (event) => { elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer, "open")});
+            //backImage.on('pointerdown', (event) => { elemetCLicked(backImage, frontImage, assetImage, squareContainer, "close")});
+            frontImage.on('pointerdown', (event) => { elemetCLicked(frontImage, backImage, assetImage, squareContainer, "open")});
         }
     }
+    const blackLayerContainer = new Container();
+    blackLayerContainer.name = "blackLayerContainer";
+    let blackLayer = new Graphics();
+    blackLayer.name = "blackLayer";
+    blackLayer.interactive = false;
+    blackLayer.beginFill(0x000000, 0.001);
+    blackLayer.drawRect(0, 0, widthDesktop, heightDesktop);
+    blackLayer.endFill();
+    blackLayerContainer.addChild(blackLayer);
+    app.stage.addChild(blackLayerContainer);
+
+    blackLayer.interactive = true;
+    blackLayer.visible = false;
+    blackOverlayGraphics = blackLayer;
+    blackLayer.on('pointerdown', (event) => { blackLayerClicked()});
+
 }
-function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer, operation){
+function blackLayerClicked(){
+    console.log("black overlauuuuuu")
+    return;
+}
+function elemetCLicked(frontImage, backImage, assetImage, squareContainer, operation){ //during reverse flip, front and back arguments gets interchanged
+    blackOverlayGraphics.visible = true;
+
     if(operation == "open"){
         if(firstElement == null){
             firstElement = squareContainer;
@@ -132,44 +141,45 @@ function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer, oper
         }
     }
     let toScale = 1;
-    tile2Image.interactive = false;
-    tile1Image.interactive = false;
+    frontImage.interactive = false;
 
     if(operation == "open"){
-        tile1Image.scale.x = 0;
-        tile1Image.scl = tile1Image.scale.x;
-        tile2Image.scl = tile2Image.scale.x;
+        backImage.scale.x = 0;
+        backImage.scl = backImage.scale.x;
+        frontImage.scl = frontImage.scale.x;
     
         assetImage.x = squareContainer.getBounds().width/2;
         assetImage.y=  squareContainer.getBounds().height/2;
     }else{
         assetImage.alpha = 0;
 
-        tile2Image.scale.x = 0;
-        tile2Image.scl = tile2Image.scale.x;
-        tile1Image.scl = tile1Image.scale.x;
+        frontImage.scale.x = 0;
+        frontImage.scl = frontImage.scale.x;
+        backImage.scl = backImage.scale.x;
     }
 
-    gsap.to(tile2Image, {scl: 0, duration: 0.1,
+    gsap.to(frontImage, {scl: 0, duration: 0.1,
         onUpdate:()=>{
-            tile2Image.scale.x = tile2Image.scl;
+            frontImage.scale.x = frontImage.scl;
         },
         onComplete:()=>{
-            gsap.to(tile1Image, {scl: toScale, duration: 0.1,
+            gsap.to(backImage, {scl: toScale, duration: 0.1,
                 onUpdate:()=>{
-                    tile1Image.scale.x = tile1Image.scl;
+                    backImage.scale.x = backImage.scl;
                 },
                 onComplete:()=>{
                     if(operation == "open"){
                         gsap.to(assetImage, {alpha: 1, duration: 0.2,
                             onComplete:()=>{
-                                //tile1Image.interactive = true;
+                                blackOverlayGraphics.visible = false;
+                                //backImage.interactive = true;
                                 getResults();
                             }
                         });
                     }else{
                         assetImage.alpha = 0; 
-                        tile1Image.interactive = true;
+                        backImage.interactive = true;
+                        blackOverlayGraphics.visible = false;
                     }
                 }
             });
@@ -178,27 +188,35 @@ function elemetCLicked(tile2Image, tile1Image, assetImage, squareContainer, oper
 }
 function getResults(){
     if(firstElement !== null && secondElement !== null){
+        blackOverlayGraphics.visible = true;
+
         if(firstElement.id == secondElement.id){
             console.log("matchedddd");
-            firstElement.getChildByName('tile1Image').interactive = false;
-            firstElement.getChildByName('tile2Image').interactive = false;
+            elementsSelectedId.set(firstElement.id, firstElement);
+            elementsSelectedId.set(secondElement.id, secondElement);
+            //firstElement.getChildByName('backImage').interactive = false;
+            firstElement.getChildByName('frontImage').interactive = false;
 
-            secondElement.getChildByName('tile1Image').interactive = false;
-            secondElement.getChildByName('tile2Image').interactive = false;
+            //secondElement.getChildByName('backImage').interactive = false;
+            secondElement.getChildByName('frontImage').interactive = false;
 
             firstElement = null;
             secondElement = null;
+            blackOverlayGraphics.visible = false;
         }else{
             console.log("not matchedddd");
-            firstElement.getChildByName('tile1Image').interactive = true;
-            secondElement.getChildByName('tile1Image').interactive = true;
-            setTimeout(() => {
-                elemetCLicked(firstElement.getChildByName('tile1Image'), firstElement.getChildByName('tile2Image'), firstElement.getChildByName('asset'),firstElement, "close");
-                elemetCLicked(secondElement.getChildByName('tile1Image'), secondElement.getChildByName('tile2Image'), secondElement.getChildByName('asset'),secondElement, "close");
 
-                firstElement = null;
-                secondElement = null;
-            }, 100);
+            setTimeout(() => {
+                if(firstElement !== null && secondElement !== null){
+                    console.log("I am hereeeeeeeeeeeeeeeeeeeeeeee")
+                    elemetCLicked(firstElement.backImage, firstElement.frontImage, firstElement.assetImage, firstElement, "close");
+                    elemetCLicked(secondElement.backImage, secondElement.frontImage, secondElement.assetImage, secondElement, "close");
+    
+                    firstElement = null;
+                    secondElement = null;
+                    blackOverlayGraphics.visible = false;     
+                }
+            }, 500);
         }
     }
 }
