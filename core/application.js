@@ -10,6 +10,16 @@ import orange from '../assets/orange.png'
 import dragonFruit from '../assets/dragonFruit.png'
 import captainAmerica from '../assets/captainAmerica.png'
 
+import frontTile from '../assets/new/frontTile.png'
+import backTile from '../assets/new/backTile.png'
+import batman from '../assets/new/batman.png'
+import harleyQuinn from '../assets/new/harleyQuinn.png'
+import joker from '../assets/new/joker.png'
+import spiderman from '../assets/new/spiderman.png'
+import superman from '../assets/new/superman.png'
+import thanos from '../assets/new/thanos.png'
+import wonderWoman from '../assets/new/wonderWoman.png'
+
 let app;
 let elementsArray = [];
 let elementsSelectedId = new Map();
@@ -35,7 +45,17 @@ const textureOrange = await Assets.load(orange); //check this
 const textureDragonFruit = await Assets.load(dragonFruit); //check this
 const textureCaptainAmerica = await Assets.load(captainAmerica); //check this
 
-let assetsArray = [{id: 1, image:textureApple}, {id: 2, image:textureMango}, {id: 3, image:textureOrange}, {id: 4, image: textureDragonFruit}, {id: 5, image: textureCaptainAmerica}];
+const textureFrontTile = await Assets.load(frontTile); //check this
+const textureBackTile = await Assets.load(backTile); //check this
+const textureBatman = await Assets.load(batman); //check this
+const textureHarleyQuinn = await Assets.load(harleyQuinn); //check this
+const textureJoker = await Assets.load(joker); //check this
+const textureSpiderman = await Assets.load(spiderman); //check this
+const textureSuperman = await Assets.load(superman); //check this
+const textureThanos = await Assets.load(thanos); //check this
+const textureWonderWoman = await Assets.load(wonderWoman); //check this
+
+let assetsArray = [{id: 1, image:textureBatman}, {id: 2, image:textureHarleyQuinn}, {id: 3, image:textureJoker}, {id: 4, image: textureSpiderman}, {id: 5, image: textureSuperman}, {id: 6, image: textureThanos}, {id:7, image: textureWonderWoman}];
 // Listen for frame updates
 app.ticker.add(() => {
     // each frame we spin the bunny around a bit
@@ -56,25 +76,15 @@ var gameInit = function(){
 
             squareContainer.name = "row_" + i + "_col_" + j;
 
-            let backImage = new Graphics();
-            backImage.name = "backImage";
-            backImage.beginFill(0xFFFDD0, 1);
-            backImage.lineStyle(3, 0x000000);
-            backImage.drawRect(0, 0, 200, 200);
-            backImage.endFill();
-            backImage.pivot.set(backImage.width/2, backImage.height/2);
-            backImage.scale.set(800/(noOfSquareslevel1*200));
-            backImage.x = backImage.width/2;
-            backImage.y= backImage.height/2;
-            backImage.interactive = false;
-
-            let frontImage = new Graphics();
+            let frontImage = new Sprite(textureFrontTile);
+            //let frontImage = new Graphics();
             frontImage.name = "frontImage";
-            frontImage.beginFill(0xFFA500, 1);
-            frontImage.lineStyle(3, 0x000000);
-            frontImage.drawRect(0, 0, 200, 200);
-            frontImage.endFill();
-            frontImage.pivot.set(frontImage.width/2, frontImage.height/2);
+            //frontImage.beginFill(0xFFA500, 1);
+            //frontImage.lineStyle(3, 0x000000);
+            //frontImage.drawRect(0, 0, 200, 200);
+            //frontImage.endFill();
+            frontImage.anchor.set(0.5);
+            //frontImage.pivot.set(frontImage.width/2, frontImage.height/2);
             frontImage.scale.set(800/(noOfSquareslevel1*200));
             frontImage.x = frontImage.width/2;
             frontImage.y= frontImage.height/2;
@@ -88,10 +98,36 @@ var gameInit = function(){
             assetImage.y= assetImage.height/2;
             assetImage.alpha = 0;
 
+            //let backImage = new Graphics();
+            let backImage = new Sprite(assetsArray[rnd].image);
+            backImage.name = "backImage";
+            // backImage.beginFill(0xFFFDD0, 1);
+            // backImage.lineStyle(3, 0x000000);
+            // backImage.drawRect(0, 0, 200, 200);
+            // backImage.endFill();
+            //backImage.pivot.set(backImage.width/2, backImage.height/2);
+            backImage.anchor.set(0.5);
+            backImage.scale.set(800/(noOfSquareslevel1*200));
+            backImage.x = backImage.width/2;
+            backImage.y= backImage.height/2;
+            //backImage.interactive = false;
+
+            let borderGraphics = new Graphics();
+            borderGraphics.name = "borderGraphics";
+            borderGraphics.beginFill(0xFFFFFF, 0.1);
+            borderGraphics.lineStyle(2, 0x000000);
+            borderGraphics.drawRect(0, 0, 200, 200);
+            borderGraphics.endFill();
+            borderGraphics.pivot.set(borderGraphics.width/2, borderGraphics.height/2);
+            borderGraphics.scale.set(800/(noOfSquareslevel1*200));
+            borderGraphics.x = borderGraphics.width/2;
+            borderGraphics.y= borderGraphics.height/2;
+
             //squareContainer.addChild(square);
             squareContainer.addChild(backImage);
             squareContainer.addChild(frontImage);
             squareContainer.addChild(assetImage);
+            squareContainer.addChild(borderGraphics);
             squareContainer.backImage = backImage;
             squareContainer.frontImage = frontImage;
             squareContainer.assetImage = assetImage;
@@ -169,13 +205,16 @@ function elemetCLicked(frontImage, backImage, assetImage, squareContainer, opera
                 },
                 onComplete:()=>{
                     if(operation == "open"){
-                        gsap.to(assetImage, {alpha: 1, duration: 0.2,
-                            onComplete:()=>{
-                                blackOverlayGraphics.visible = false;
-                                //backImage.interactive = true;
-                                getResults();
-                            }
-                        });
+                        //assetImage.alpha = 1;
+                        blackOverlayGraphics.visible = false;
+                        getResults();
+                        // gsap.to(assetImage, {alpha: 1, duration: 0,
+                        //     onComplete:()=>{
+                        //         blackOverlayGraphics.visible = false;
+                        //         //backImage.interactive = true;
+                        //         getResults();
+                        //     }
+                        // });
                     }else{
                         assetImage.alpha = 0; 
                         backImage.interactive = true;
