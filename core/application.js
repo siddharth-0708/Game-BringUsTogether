@@ -20,8 +20,21 @@ import superman from '../assets/new/superman.png'
 import thanos from '../assets/new/thanos.png'
 import wonderWoman from '../assets/new/wonderWoman.png'
 
+import aquaman from '../assets/new/aquaman.png'
+import captainmarvel from '../assets/new/captainmarvel.png'
+import catwoman from '../assets/new/catwoman.png'
+import doctorstrange from '../assets/new/doctorstrange.png'
+import flash from '../assets/new/flash.png'
+import hulk from '../assets/new/hulk.png'
+import ironman from '../assets/new/ironman.png'
+import shehulk from '../assets/new/shehulk.png'
+import storm from '../assets/new/storm.png'
+import thor from '../assets/new/thor.png'
+import wolverine from '../assets/new/wolverine.png'
+
 let app;
 let elementsArray = [];
+let containersArray = [];
 let elementsSelectedId = new Map();
 let widthDesktop = 800;
 let heightDesktop = 800;
@@ -39,11 +52,11 @@ globalThis.__PIXI_APP__ = app;
 
 document.getElementById('canvasContainer').appendChild(app.view);
 
-const textureApple = await Assets.load(apple); //check this
-const textureMango = await Assets.load(mango); //check this
-const textureOrange = await Assets.load(orange); //check this
-const textureDragonFruit = await Assets.load(dragonFruit); //check this
-const textureCaptainAmerica = await Assets.load(captainAmerica); //check this
+// const textureApple = await Assets.load(apple); //check this
+// const textureMango = await Assets.load(mango); //check this
+// const textureOrange = await Assets.load(orange); //check this
+// const textureDragonFruit = await Assets.load(dragonFruit); //check this
+// const textureCaptainAmerica = await Assets.load(captainAmerica); //check this
 
 const textureFrontTile = await Assets.load(frontTile); //check this
 const textureBackTile = await Assets.load(backTile); //check this
@@ -55,7 +68,38 @@ const textureSuperman = await Assets.load(superman); //check this
 const textureThanos = await Assets.load(thanos); //check this
 const textureWonderWoman = await Assets.load(wonderWoman); //check this
 
-let assetsArray = [{id: 1, image:textureBatman}, {id: 2, image:textureHarleyQuinn}, {id: 3, image:textureJoker}, {id: 4, image: textureSpiderman}, {id: 5, image: textureSuperman}, {id: 6, image: textureThanos}, {id:7, image: textureWonderWoman}];
+const textureAquaman = await Assets.load(aquaman); //check this
+const textureCaptainmarvel = await Assets.load(captainmarvel); //check this
+const textureCatwoman = await Assets.load(catwoman); //check this
+const textureDoctorstrange = await Assets.load(doctorstrange); //check this
+const textureFlash = await Assets.load(flash); //check this
+const textureHulk = await Assets.load(hulk); //check this
+const textureIronman = await Assets.load(ironman); //check this
+const textureStorm = await Assets.load(storm); //check this
+const textureThor = await Assets.load(thor); //check this
+const textureWolverine = await Assets.load(wolverine); //check this
+const textureShehulk = await Assets.load(shehulk); //check this
+
+let assetsArray = [
+{id: 1, image:textureBatman},
+{id: 2, image:textureHarleyQuinn}, 
+{id: 3, image:textureJoker}, 
+{id: 4, image: textureSpiderman}, 
+{id: 5, image: textureSuperman}, 
+{id: 6, image: textureThanos}, 
+{id: 7, image: textureWonderWoman},
+{id: 8, image:textureAquaman}, 
+{id: 9, image:textureCaptainmarvel}, 
+{id: 10, image: textureCatwoman}, 
+{id: 11, image: textureDoctorstrange}, 
+{id: 12, image: textureFlash}, 
+{id: 13, image: textureHulk},
+{id: 14, image:textureIronman}, 
+{id: 15, image: textureStorm}, 
+{id: 16, image: textureThor}, 
+{id: 17, image: textureWolverine}, 
+{id:18, image: textureShehulk}
+];
 // Listen for frame updates
 app.ticker.add(() => {
     // each frame we spin the bunny around a bit
@@ -89,17 +133,16 @@ var gameInit = function(){
             frontImage.x = frontImage.width/2;
             frontImage.y= frontImage.height/2;
 
-            let rnd = randomInteger(0,assetsArray.length - 1);
-            const assetImage = new Sprite(assetsArray[rnd].image);
-            assetImage.name = "asset";
-            assetImage.anchor.set(0.5);
-            assetImage.scale.set(800/(noOfSquareslevel1*200));
-            assetImage.x = assetImage.width/2;
-            assetImage.y= assetImage.height/2;
-            assetImage.alpha = 0;
+            // const assetImage = new Sprite(assetsArray[rnd].image);
+            // assetImage.name = "asset";
+            // assetImage.anchor.set(0.5);
+            // assetImage.scale.set(800/(noOfSquareslevel1*200));
+            // assetImage.x = assetImage.width/2;
+            // assetImage.y= assetImage.height/2;
+            // assetImage.alpha = 0;
 
             //let backImage = new Graphics();
-            let backImage = new Sprite(assetsArray[rnd].image);
+            let backImage = new Sprite(assetsArray[0].image);
             backImage.name = "backImage";
             // backImage.beginFill(0xFFFDD0, 1);
             // backImage.lineStyle(3, 0x000000);
@@ -126,15 +169,16 @@ var gameInit = function(){
             //squareContainer.addChild(square);
             squareContainer.addChild(backImage);
             squareContainer.addChild(frontImage);
-            squareContainer.addChild(assetImage);
+            //squareContainer.addChild(assetImage);
             squareContainer.addChild(borderGraphics);
             squareContainer.backImage = backImage;
             squareContainer.frontImage = frontImage;
-            squareContainer.assetImage = assetImage;
-            squareContainer.id = assetsArray[rnd].id;
+            //squareContainer.assetImage = assetImage;
+            squareContainer.id = assetsArray[0].id;
 
             parentContainer.addChild(squareContainer);
             elementsArray.push({frontImage: frontImage, id: squareContainer.id});
+            containersArray.push(squareContainer);
             frontImage.interactive = true;
             frontImage.cursor = 'pointer';
 
@@ -142,7 +186,7 @@ var gameInit = function(){
             backImage.cursor = 'pointer';
 
             //backImage.on('pointerdown', (event) => { elemetCLicked(backImage, frontImage, assetImage, squareContainer, "close")});
-            frontImage.on('pointerdown', (event) => { elemetCLicked(frontImage, backImage, assetImage, squareContainer, "open")});
+            frontImage.on('pointerdown', (event) => { elemetCLicked(frontImage, backImage, null, squareContainer, "open")});
         }
     }
     const blackLayerContainer = new Container();
@@ -155,6 +199,7 @@ var gameInit = function(){
     blackLayer.endFill();
     blackLayerContainer.addChild(blackLayer);
     app.stage.addChild(blackLayerContainer);
+    addTextures();
 
     blackLayer.interactive = true;
     blackLayer.visible = false;
@@ -166,6 +211,28 @@ function blackLayerClicked(){
     console.log("black overlauuuuuu")
     return;
 }
+function addTextures(){
+    let assetLength = Math.min(assetsArray.length, noOfSquareslevel1);
+    let iterator = 0;
+
+    while(containersArray.length > 0){
+        if(iterator > assetLength - 1){
+            iterator = 0;
+        };
+        let rnd = randomInteger(0,containersArray.length - 1);
+        let cont = containersArray[rnd];
+        cont.id = assetsArray[iterator].id;
+        let backImage = cont.getChildByName('backImage');
+        backImage.texture = assetsArray[iterator].image;
+        backImage.anchor.set(0.5);
+        backImage.scale.set(800/(noOfSquareslevel1*200));
+        backImage.x = backImage.width/2;
+        backImage.y= backImage.height/2;
+        console.log("image added is ", assetsArray[iterator].id);
+        containersArray.splice(rnd, 1);
+        iterator++;
+    }
+}
 function elemetCLicked(frontImage, backImage, assetImage, squareContainer, operation){ //during reverse flip, front and back arguments gets interchanged
     blackOverlayGraphics.visible = true;
 
@@ -176,7 +243,7 @@ function elemetCLicked(frontImage, backImage, assetImage, squareContainer, opera
             secondElement = squareContainer;
         }
     }
-    let toScale = 1;
+    let toScale = frontImage.scale.x;
     frontImage.interactive = false;
 
     if(operation == "open"){
@@ -184,10 +251,10 @@ function elemetCLicked(frontImage, backImage, assetImage, squareContainer, opera
         backImage.scl = backImage.scale.x;
         frontImage.scl = frontImage.scale.x;
     
-        assetImage.x = squareContainer.getBounds().width/2;
-        assetImage.y=  squareContainer.getBounds().height/2;
+        // assetImage.x = squareContainer.getBounds().width/2;
+        // assetImage.y=  squareContainer.getBounds().height/2;
     }else{
-        assetImage.alpha = 0;
+        //assetImage.alpha = 0;
 
         frontImage.scale.x = 0;
         frontImage.scl = frontImage.scale.x;
@@ -216,7 +283,7 @@ function elemetCLicked(frontImage, backImage, assetImage, squareContainer, opera
                         //     }
                         // });
                     }else{
-                        assetImage.alpha = 0; 
+                        //assetImage.alpha = 0; 
                         backImage.interactive = true;
                         blackOverlayGraphics.visible = false;
                     }
@@ -248,8 +315,8 @@ function getResults(){
             setTimeout(() => {
                 if(firstElement !== null && secondElement !== null){
                     console.log("I am hereeeeeeeeeeeeeeeeeeeeeeee")
-                    elemetCLicked(firstElement.backImage, firstElement.frontImage, firstElement.assetImage, firstElement, "close");
-                    elemetCLicked(secondElement.backImage, secondElement.frontImage, secondElement.assetImage, secondElement, "close");
+                    elemetCLicked(firstElement.backImage, firstElement.frontImage, null, firstElement, "close");
+                    elemetCLicked(secondElement.backImage, secondElement.frontImage, null, secondElement, "close");
     
                     firstElement = null;
                     secondElement = null;
