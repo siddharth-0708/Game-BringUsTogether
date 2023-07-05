@@ -33,6 +33,7 @@ import thor from '../assets/new/thor.png'
 import wolverine from '../assets/new/wolverine.png'
 
 let app;
+let parentToScale = null;
 let elementsArray = [];
 let containersArray = [];
 let elementsSelectedId = new Map();
@@ -44,7 +45,12 @@ let secondElement = null;
 let blackOverlayGraphics = null;
 
 if(isMobile){
-    app = new Application( {width: 375, height: 667, backgroundAlpha: 1, backgroundColor: 0x000000, autoResize: true, resizeTo: window, resolution: window.devicePixelRatio > 1 ? 1:1 }); //check this
+    let deviceWidth = Math.floor(window.screen.width * 1.2);
+    let deviceHeight = Math.floor(window.screen.height * 1.2);
+    let dimen = Math.max(deviceWidth, deviceHeight);
+    document.getElementById('canvasContainer').style.display = 'block';
+
+    app = new Application( {width: dimen, height: dimen, backgroundAlpha: 1, backgroundColor: 0x000000, resolution: window.devicePixelRatio > 1 ? 1:1 }); //check this
 }else{
     app = new Application( {width: 800, height: 800, backgroundAlpha: 1,  backgroundColor: 0x000000, autoResize: true, resolution: window.devicePixelRatio > 1 ? 2:1 });
 }
@@ -109,6 +115,7 @@ var gameInit = function(){
 
     const parentContainer = new Container();
     app.stage.addChild(parentContainer);
+    parentToScale = parentContainer;
     let width = widthDesktop/noOfSquareslevel1;
     let height = heightDesktop/noOfSquareslevel1;
 
@@ -205,6 +212,8 @@ var gameInit = function(){
     blackLayer.visible = false;
     blackOverlayGraphics = blackLayer;
     blackLayer.on('pointerdown', (event) => { blackLayerClicked()});
+
+    window.onresize();
 
 }
 function blackLayerClicked(){
@@ -345,11 +354,10 @@ var resizeCanvasContainer = function () {
 };
 window.onresize = function(){
 
-    if(isMobile){
-        bunny.x = app.renderer.width / 2;
-        bunny.y = app.renderer.height / 2;
-        let scale  = window.innerWidth/375;
-        bunny.scale.set(scale*0.5);
+    if(isMobile && app.stage){
+        app.stage.scale.set(0.45* Math.min(window.innerWidth/375, window.innerHeight/667));
+        app.stage.x = (window.innerWidth/2 - app.stage.width/2);
+        app.stage.y = (window.innerHeight/2 - app.stage.height/2);
     }else{
         resizeCanvasContainer();
     }
